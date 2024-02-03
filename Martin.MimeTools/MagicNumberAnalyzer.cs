@@ -2,7 +2,7 @@
 using System.Reflection.Metadata.Ecma335;
 using static System.Net.Mime.MediaTypeNames;
 
-namespace MimeTools;
+namespace Martin.MimeTools;
 
 public static class MagicNumberAnalyzer
 {
