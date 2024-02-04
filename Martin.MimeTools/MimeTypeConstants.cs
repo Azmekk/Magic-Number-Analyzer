@@ -12,6 +12,8 @@ namespace Martin.MimeTools
 		//Application files
 		public const string SevenZip = "application/x-7z-compressed";
 		public const string Gzip = "application/gzip";
+		public const string Rar = "application/vnd.rar";
+		public const string Exe = "application/x-msdownload";
 
 
 		//Media
