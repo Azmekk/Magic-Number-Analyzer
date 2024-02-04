@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection.Metadata.Ecma335;
+using System.Runtime.Intrinsics.X86;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace Martin.MimeTools;
@@ -10,7 +11,7 @@ public static class MagicNumberAnalyzer
 	/// Checks a memory stream for known magic numbers for image types.
 	/// </summary>
 	/// <returns>
-	/// A string which should be compared to the constants provided by System.Net.Mime.MediaTypeNames or an empty string if no match.;
+	/// A string representing a known file mime type or a general application/octet-stream if no match.
 	/// </returns>
 	static public string GetFileMimeType(MemoryStream stream)
 	{
@@ -34,7 +35,7 @@ public static class MagicNumberAnalyzer
 	/// Checks a byte array for known magic numbers for image types.
 	/// </summary>
 	/// <returns>
-	/// A string which should be compared to the constants provided by System.Net.Mime.MediaTypeNames or an empty string if no match.;
+	/// /// A string representing a known file mime type or a general application/octet-stream if no match.
 	/// </returns>
 	static public string GetFileMimeType(byte[] byteArr)
 	{
@@ -55,7 +56,7 @@ public static class MagicNumberAnalyzer
 	/// Checks a file stream for known magic numbers for image types.
 	/// </summary>
 	/// <returns>
-	/// A string which should be compared to the constants provided by System.Net.Mime.MediaTypeNames or an empty string if no match.;
+	/// /// A string representing a known file mime type or a general application/octet-stream if no match.
 	/// </returns>
 	static public string GetFileMimeType(FileStream fileStream)
 	{
@@ -105,85 +106,105 @@ public static class MagicNumberAnalyzer
 		{
 			return Image.Tiff;
 		}
+		else if(FileIsPDF(byteArr))
+		{
+			return Application.Pdf;
+		}
+		else if(FileIsZip(byteArr))
+		{
+			return Application.Zip;
+		}
+		else if(FileIs7z(byteArr))
+		{
+			return MimeTypeConstants.SevenZip;
+		}
+		else if(FileIsGzip(byteArr))
+		{
+			return MimeTypeConstants.Gzip;
+		}
+		else if(FileIsMp3(byteArr))
+		{
+			return MimeTypeConstants.Mp3;
+		}
+		else if(FileIsMp4(byteArr))
+		{
+			return MimeTypeConstants.Mp4;
+		}
+		else if(FileIsMov(byteArr))
+		{
+			return MimeTypeConstants.Mov;
+		}
+		else if(FileIsAvi(byteArr))
+		{
+			return MimeTypeConstants.Avi;
+		}
+		else if(FileIsWav(byteArr))
+		{
+			return MimeTypeConstants.Wav;
+		}
 		else if(FileIsWebp(byteArr))
 		{
 			return Image.Webp;
 		}
+		else if(FileIsWebm(byteArr))
+		{
+			return MimeTypeConstants.Webm;
+		}
+		else if(FileIsFlv(byteArr))
+		{
+			return MimeTypeConstants.Flv;
+		}
+		else if(FileIsM4v(byteArr))
+		{
+			return MimeTypeConstants.M4v;
+		}
 
-		return "";
+
+		return Application.Octet;
 	}
 
 	static private bool FileIsJpeg(byte[] byteArr)
 	{
-		List<byte> knownStartingBytes = [0xFF, 0xD8, 0xFF,];
+		byte[] knownStartingBytes = [0xFF, 0xD8, 0xFF,];
 
-		List<List<byte>> byteArrays =
-		[
-			[0xE0],
-			[0x4A, 0x46, 0x49, 0x46, 0x00],
-			[0xE1],
-			[0x45, 0x78, 0x69, 0x66, 0x00],
-			[0xE8],
-			[0x53, 0x50, 0x49, 0x46, 0x46, 0x00],
-		];
-
-		for(int i = 0; i < 3; i++)
-		{
-			if(byteArr[i] != knownStartingBytes[i])
-			{
-				return false;
-			}
-		}
-
-		int matchingArray = -1;
-		for(int i = 0; i < byteArrays.Count; i += 2)
-		{
-			if(byteArr[3] == byteArrays[i][0])
-			{
-				matchingArray = i + 1;
-				break;
-			}
-		}
-
-		if(matchingArray == -1)
+		if(CompareBytes(knownStartingBytes, byteArr))
 		{
 			return false;
 		}
 
-		for(int i = 0; i < byteArrays[matchingArray].Count; i++)
+		byte[] knownFourthBytes = [0xE0, 0xE1, 0xE8,];
+
+		if(knownFourthBytes.Contains(byteArr[3]))
 		{
-			if(byteArr[6 + i] != byteArrays[matchingArray][i])
-			{
-				return false;
-			}
+			return true;
 		}
 
-		return true;
+		return false;
 	}
 
 	static private bool FileIsPng(byte[] byteArr)
 	{
-		List<byte> knownStartingBytes = [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A,];
+		byte[] knownStartingBytes = [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A,];
 
 		return CompareBytes(byteArr, knownStartingBytes);
 	}
 
 	static private bool FileIsBmp(byte[] byteArr)
 	{
-		List<byte> knownStartingBytes = [0x42, 0x4D];
+		byte[] knownStartingBytes = [0x42, 0x4D];
 
 		return CompareBytes(byteArr, knownStartingBytes);
 	}
 
 	static private bool FileIsGif(byte[] byteArr)
 	{
-		List<List<byte>> knownStartingBytesList =
+		byte[][] knownStartingBytesList =
 		[
 			[0x47, 0x49, 0x46, 0x38, 0x37, 0x61,],
 			[0x47, 0x49, 0x46, 0x38, 0x39, 0x61,]
 		];
 
-		foreach(var knownStartingBytes in knownStartingBytesList)
+		foreach(byte[] knownStartingBytes in knownStartingBytesList)
 		{
 			if(CompareBytes(byteArr, knownStartingBytes))
 			{
@@ -196,21 +217,21 @@ public static class MagicNumberAnalyzer
 
 	static private bool FileIsIcon(byte[] byteArr)
 	{
-		List<byte> knownStartingBytes = [0x00, 0x00, 0x01, 0x00];
+		byte[] knownStartingBytes = [0x00, 0x00, 0x01, 0x00];
 
 		return CompareBytes(byteArr, knownStartingBytes);
 	}
 
 	static private bool FileIsSvg(byte[] byteArr)
 	{
-		List<byte> knownStartingBytes = [0x3C, 0x3F, 0x78, 0x6D, 0x6C, 0x20];
+		byte[] knownStartingBytes = [0x3C, 0x3F, 0x78, 0x6D, 0x6C, 0x20];
 
 		return CompareBytes(byteArr, knownStartingBytes);
 	}
 
 	static private bool FileIsTiff(byte[] byteArr)
 	{
-		List<List<byte>> knownStartingBytesList =
+		byte[][] knownStartingBytesList =
 		[
 			[0x49, 0x49, 0x2A, 0x00],
 			[0x4D, 0x4D, 0x00, 0x2A],
@@ -229,43 +250,183 @@ public static class MagicNumberAnalyzer
 		return false;
 	}
 
-	static private bool FileIsWebp(byte[] byteArr)
+	static private bool FileIsPDF(byte[] byteArr)
 	{
-		List<byte> knownStartingBytes = [0x52, 0x49, 0x46, 0x46,];
-		List<byte> knownEndingBytes = [0x57, 0x45, 0x42, 0x50,];
+		byte[] knownStartingBytes = [0xFF, 0xD8, 0xFF, 0xE0];
+		return CompareBytes(byteArr, knownStartingBytes);
+	}
 
-		bool startingBytesMatch = CompareBytes(byteArr, knownStartingBytes);
+	static private bool FileIsZip(byte[] byteArr)
+	{
+		byte[] knownStartingBytes = [0x50, 0x4B, 0x03, 0x04];
+		return CompareBytes(byteArr, knownStartingBytes);
+	}
 
-		byte[] endingBytesBuffer = new byte[4];
-		for(int i = 8; i < 12; i++)
+	static private bool FileIs7z(byte[] byteArr)
+	{
+		byte[] knownStartingBytes = [0x37, 0x7A, 0xBC, 0xAF, 0x27, 0x1C];
+		return CompareBytes(byteArr, knownStartingBytes);
+	}
+
+	static private bool FileIsGzip(byte[] byteArr)
+	{
+		byte[] knownStartingBytes = [0x1F, 0x8B, 0x08];
+		return CompareBytes(byteArr, knownStartingBytes);
+	}
+
+	static private bool FileIsMp3(byte[] byteArr)
+	{
+		byte[] knownStartingBytes = [0x49, 0x44, 0x33];
+		return CompareBytes(byteArr, knownStartingBytes);
+	}
+
+	static private bool FileIsMp4(byte[] byteArr)
+	{
+		byte[][] knownStartingBytesArr = [
+			[0x66, 0x74, 0x79, 0x70, 0x4D, 0x53, 0x4E, 0x56],
+			[0x66, 0x74, 0x79, 0x70, 0x69, 0x73, 0x6F, 0x6D],
+
+		];
+
+		foreach(byte[] knownStartingBytes in knownStartingBytesArr)
 		{
-			endingBytesBuffer[i - 8] = byteArr[i];
+			if(CompareBytes(byteArr, knownStartingBytes, 4))
+			{
+				return true;
+			}
+
 		}
 
-		bool endingBytesMatch = CompareBytes(endingBytesBuffer, knownEndingBytes);
+		return false;
+	}
+
+	static private bool FileIsMov(byte[] byteArr)
+	{
+		byte[][] knownStartingBytesArr = [
+			[0x14, 0x66, 0x74, 0x79, 0x70, 0x71, 0x74, 0x20, 0x20],
+			[0x6D, 0x6F, 0x6F, 0x76]
+		];
+		foreach(byte[] knownStartingBytes in knownStartingBytesArr)
+		{
+			if(CompareBytes(byteArr, knownStartingBytes, 4))
+			{
+				return true;
+			}
+
+		}
+		return false;
+	}
+
+	static private bool FileIsAvi(byte[] byteArr)
+	{
+		byte[] knownStartingBytes = [0x52, 0x49, 0x46, 0x46];
+		byte[] knownEndingBytes = [0x41, 0x56, 0x49, 0x20, 0x4C, 0x49, 0x53, 0x54];
+
+		bool startingBytesMatch = CompareBytes(byteArr, knownStartingBytes);
+		bool endingBytesMatch = CompareBytes(byteArr, knownEndingBytes, 8);
 
 		return startingBytesMatch && endingBytesMatch;
 	}
 
-	static private bool CompareBytes(IEnumerable<byte> p1, IEnumerable<byte> p2)
+	static private bool FileIsWav(byte[] byteArr)
 	{
-		var arr1 = p1.ToArray();
-		var arr2 = p2.ToArray();
-		if(arr1.Length > arr2.Length)
+		byte[] knownStartingBytes = [0x52, 0x49, 0x46, 0x46];
+		byte[] knownEndingBytes = [0x57, 0x41, 0x56, 0x45, 0x66, 0x6D, 0x74, 0x20];
+
+		bool startingBytesMatch = CompareBytes(byteArr, knownStartingBytes);
+		bool endingBytesMatch = CompareBytes(byteArr, knownEndingBytes, 8);
+
+		return startingBytesMatch && endingBytesMatch;
+	}
+
+	static private bool FileIsWebp(byte[] byteArr)
+	{
+		byte[] knownStartingBytes = [0x52, 0x49, 0x46, 0x46,];
+		byte[] knownEndingBytes = [0x57, 0x45, 0x42, 0x50,];
+
+		bool startingBytesMatch = CompareBytes(byteArr, knownStartingBytes);
+		bool endingBytesMatch = CompareBytes(byteArr, knownEndingBytes, 8);
+
+		return startingBytesMatch && endingBytesMatch;
+	}
+
+	static private bool FileIsWebm(byte[] byteArr)
+	{
+		byte[] knownStartingBytes = [0x1A, 0x45, 0xDF, 0xA3];
+		return CompareBytes(byteArr, knownStartingBytes);
+	}
+
+	static private bool FileIsFlv(byte[] byteArr)
+	{
+		byte[][] knownStartingBytesArr = [
+			[0x66, 0x74, 0x79, 0x70, 0x4D, 0x53, 0x4E, 0x56],
+			[0x66, 0x74, 0x79, 0x70, 0x69, 0x73, 0x6F, 0x6D],
+
+		];
+
+		foreach(byte[] knownStartingBytes in knownStartingBytesArr)
 		{
-			for(int i = 0; i < arr2.Length; i++)
+			if(CompareBytes(byteArr, knownStartingBytes, 4))
 			{
-				if(arr1[i] != arr2[i])
+				return true;
+			}
+
+		}
+
+		return false;
+	}
+
+	static private bool FileIsM4v(byte[] byteArr)
+	{
+		byte[][] knownStartingBytesArr = [
+			[0x66, 0x74, 0x79, 0x70, 0x4D, 0x34, 0x56, 0x20],
+			[0x66, 0x74, 0x79, 0x70, 0x6D, 0x70, 0x34, 0x32],
+
+		];
+
+		foreach(byte[] knownStartingBytes in knownStartingBytesArr)
+		{
+			if(CompareBytes(byteArr, knownStartingBytes, 4))
+			{
+				return true;
+			}
+
+		}
+
+		return false;
+	}
+
+	static private bool CompareBytes(byte[] arr1, byte[] arr2)
+	{
+		int minLength = Math.Min(arr1.Length, arr2.Length);
+
+		for(int i = 0; i < minLength; i++)
+		{
+			if(arr1[i] != arr2[i])
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	static private bool CompareBytes(byte[] arr1, byte[] arr2, int startingPos)
+	{
+		int minLength = Math.Min(arr1.Length, arr2.Length);
+
+		for(int i = 0; i < minLength; i++)
+		{
+			if(arr1.Length > arr2.Length)
+			{
+				if(arr1[i + startingPos] != arr2[i])
 				{
 					return false;
 				}
 			}
-		}
-		else
-		{
-			for(int i = 0; i < arr1.Length; i++)
+			else
 			{
-				if(arr1[i] != arr2[i])
+				if(arr1[i] != arr2[i + startingPos])
 				{
 					return false;
 				}
