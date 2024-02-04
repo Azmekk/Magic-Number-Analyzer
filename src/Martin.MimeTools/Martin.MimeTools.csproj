@@ -6,6 +6,33 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Title>Magic Number Analyzer</Title>
+    <Authors>Martin Jordanov</Authors>
+    <Product>$(AssemblyName).MagicNumberAnalyzer</Product>
+    <RepositoryUrl>https://github.com/Azmekk/Martin.MimeTools</RepositoryUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Description>A simple magic numbers analyzer which allows you to easily find out the Mime filetype of a file regardless of the extension at the end. This proves highly useful when working with files from untrusted sources or ones that do not include their extension at the end.
+
+Users can also add their own magic numbers by calling the .Add() method on the CustomMagicNumbers property of MagicNumberAnalyzer.
+
+Find out more about how to use on the linked github page.</Description>
+    <PackageProjectUrl>https://github.com/Azmekk/Martin.MimeTools</PackageProjectUrl>
+    <PackageIcon>file-black-icon.png</PackageIcon>
+    <PackageTags>mime, mimetype, file, magic number, magic numbers, magic bytes, magic, numbers, bytes, analyzer, detector</PackageTags>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\images\file-black-icon.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="file-black-icon.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
 </Project>

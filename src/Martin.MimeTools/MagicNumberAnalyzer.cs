@@ -12,7 +12,7 @@ public static class MagicNumberAnalyzer
 	/// This is the list of known magic numbers. Additional custom magic numbers can be added per user discretion.
 	/// Check the MagicNumbers struct summary to understand how to create new ones.
 	/// </summary>
-	public static List<MagicNumber> MagicNumbers { get; } =
+	private static List<MagicNumber> MagicNumbers =
 	[
 		new(Image.Jpeg, [new([0xFF, 0xD8, 0xFF, 0xE0], 0)]),
 		new(Image.Jpeg, [new([0xFF, 0xD8, 0xFF, 0xE1], 0)]),
@@ -46,6 +46,8 @@ public static class MagicNumberAnalyzer
 		new(MimeTypeConstants.M4v, [new([0x66, 0x74, 0x79, 0x70, 0x6D, 0x70, 0x34, 0x32], 4)]),
 		new(MimeTypeConstants.Exe, [new([0x4D, 0x5A], 0)]),
 	];
+
+	public static List<MagicNumber> CustomMagicNumbers = [];
 
 	/// <summary>
 	/// Checks a memory stream for known magic numbers for image types.
@@ -120,6 +122,24 @@ public static class MagicNumberAnalyzer
 	static private string DetermineMimeString(byte[] byteArr)
 	{
 		foreach(MagicNumber magicNumber in MagicNumbers)
+		{
+			bool allSequencesMatch = true;
+			foreach(KnownByteSequence knownByteSequence in magicNumber.KnownByteSequences)
+			{
+				if(!CompareBytes(byteArr, knownByteSequence.ByteArr, knownByteSequence.StartOffset))
+				{
+					allSequencesMatch = false;
+					break;
+				}
+			}
+
+			if(allSequencesMatch)
+			{
+				return magicNumber.MimeType;
+			}
+		}
+
+		foreach(MagicNumber magicNumber in CustomMagicNumbers)
 		{
 			bool allSequencesMatch = true;
 			foreach(KnownByteSequence knownByteSequence in magicNumber.KnownByteSequences)

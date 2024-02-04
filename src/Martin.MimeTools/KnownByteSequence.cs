@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Martin.MimeTools
 {
     /// <summary>
-    /// Simple sequence of bytes consisting of a byte array (ByteArr) and a starting offset (StartOffset).
+    /// Simple struct representing a sequence of bytes consisting of a byte array (ByteArr) and a starting offset (StartOffset).
     /// </summary>
 	public struct KnownByteSequence
 	{
