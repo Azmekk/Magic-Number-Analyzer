@@ -90,7 +90,7 @@ using Martin.FileTools;
 using Martin.FileTools.Constants;
 using Martin.FileTools.Structs;
 
-MagicNumberAnalyzer.CustomMagicNumbers.Add(new MagicNumber("Your custom mime type", [new([0x24, 0x27], 0), [new([0xF1, 0xA1, 0x41], 4), [new([0xC3], 8)]));
+MagicNumberAnalyzer.CustomMagicNumbers.Add(new MagicNumber("Your custom mime type", [new([0x24, 0x27], 0), new([0xF1, 0xA1, 0x41], 4), new([0xC3], 8)]));
 ```
 
 Note that custom types are checked first so you could effectively override the registered types. That is so it doesn't interfere with your own custom magic number functionality.
