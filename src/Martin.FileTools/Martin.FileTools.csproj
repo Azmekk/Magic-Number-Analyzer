@@ -21,6 +21,8 @@ Find out more about how to use on the linked github page.</Description>
     <PackageReadmeFile>Nuget.Readme.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
     <PackageId>$(AssemblyName).MagicNumberAnalyzer</PackageId>
+    <PackageReleaseNotes>Initial release</PackageReleaseNotes>
+    <Copyright>Copyright information in the License</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
