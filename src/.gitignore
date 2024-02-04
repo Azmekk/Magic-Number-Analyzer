@@ -44,3 +44,6 @@ msbuild.wrn
 
 #appsettings.json
 appsettings.json
+
+#Nuget readme
+Nuget.Readme.md
