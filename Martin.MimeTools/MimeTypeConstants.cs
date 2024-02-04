@@ -11,7 +11,7 @@ namespace Martin.MimeTools
 	{
 		//Application files
 		public const string SevenZip = "application/x-7z-compressed";
-		public const string Gzip = "application/x-7z-compressed";
+		public const string Gzip = "application/gzip";
 
 
 		//Media

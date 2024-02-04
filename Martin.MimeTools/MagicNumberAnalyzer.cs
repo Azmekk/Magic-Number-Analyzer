@@ -167,7 +167,7 @@ public static class MagicNumberAnalyzer
 	{
 		byte[] knownStartingBytes = [0xFF, 0xD8, 0xFF,];
 
-		if(CompareBytes(knownStartingBytes, byteArr))
+		if(!CompareBytes(knownStartingBytes, byteArr))
 		{
 			return false;
 		}
@@ -252,7 +252,7 @@ public static class MagicNumberAnalyzer
 
 	static private bool FileIsPDF(byte[] byteArr)
 	{
-		byte[] knownStartingBytes = [0xFF, 0xD8, 0xFF, 0xE0];
+		byte[] knownStartingBytes = [0x25, 0x50, 0x44, 46];
 		return CompareBytes(byteArr, knownStartingBytes);
 	}
 
@@ -358,22 +358,9 @@ public static class MagicNumberAnalyzer
 
 	static private bool FileIsFlv(byte[] byteArr)
 	{
-		byte[][] knownStartingBytesArr = [
-			[0x66, 0x74, 0x79, 0x70, 0x4D, 0x53, 0x4E, 0x56],
-			[0x66, 0x74, 0x79, 0x70, 0x69, 0x73, 0x6F, 0x6D],
+		byte[] knownStartingBytesArr = [0x46, 0x4C, 0x56, 0x01];
 
-		];
-
-		foreach(byte[] knownStartingBytes in knownStartingBytesArr)
-		{
-			if(CompareBytes(byteArr, knownStartingBytes, 4))
-			{
-				return true;
-			}
-
-		}
-
-		return false;
+		return CompareBytes(byteArr, knownStartingBytesArr);
 	}
 
 	static private bool FileIsM4v(byte[] byteArr)
