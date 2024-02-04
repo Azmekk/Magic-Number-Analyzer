@@ -252,7 +252,7 @@ public static class MagicNumberAnalyzer
 
 	static private bool FileIsPDF(byte[] byteArr)
 	{
-		byte[] knownStartingBytes = [0x25, 0x50, 0x44, 46];
+		byte[] knownStartingBytes = [0x25, 0x50, 0x44, 0x46];
 		return CompareBytes(byteArr, knownStartingBytes);
 	}
 
@@ -303,7 +303,7 @@ public static class MagicNumberAnalyzer
 	static private bool FileIsMov(byte[] byteArr)
 	{
 		byte[][] knownStartingBytesArr = [
-			[0x14, 0x66, 0x74, 0x79, 0x70, 0x71, 0x74, 0x20, 0x20],
+			[0x66, 0x74, 0x79, 0x70, 0x71, 0x74, 0x20, 0x20],
 			[0x6D, 0x6F, 0x6F, 0x76]
 		];
 		foreach(byte[] knownStartingBytes in knownStartingBytesArr)
