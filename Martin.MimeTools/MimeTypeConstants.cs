@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Martin.MimeTools
 {
-	internal static class MimeTypeConstants
+	public static class MimeTypeConstants
 	{
 		//Application files
 		public const string SevenZip = "application/x-7z-compressed";
