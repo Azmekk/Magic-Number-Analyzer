@@ -2,9 +2,11 @@
 using System.ComponentModel;
 using System.Reflection.Metadata.Ecma335;
 using System.Runtime.Intrinsics.X86;
+using Martin.FileTools.Constants;
+using Martin.FileTools.Structs;
 using static System.Net.Mime.MediaTypeNames;
 
-namespace Martin.MimeTools;
+namespace Martin.FileTools;
 
 public static class MagicNumberAnalyzer
 {
