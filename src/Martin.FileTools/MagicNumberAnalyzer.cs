@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.IO;
 using System.Reflection.Metadata.Ecma335;
 using System.Runtime.Intrinsics.X86;
 using Martin.FileTools.Constants;
@@ -59,17 +60,9 @@ public static class MagicNumberAnalyzer
 	/// </returns>
 	static public string GetFileMimeType(MemoryStream stream)
 	{
-		if(stream == null)
-		{
-			return "";
-		}
+		ArgumentNullException.ThrowIfNull(stream);
 
-		if(stream.Length < 50)
-		{
-			return "";
-		}
-
-		byte[] buffer = new byte[50];
+		byte[] buffer = new byte[stream.Length];
 		stream.Read(buffer, 0, buffer.Length);
 
 		return DetermineMimeString(buffer);
@@ -83,16 +76,7 @@ public static class MagicNumberAnalyzer
 	/// </returns>
 	static public string GetFileMimeType(byte[] byteArr)
 	{
-		if(byteArr == null)
-		{
-			return "";
-		}
-
-		//Arbitrary length to avoid out of bounds issues.
-		if(byteArr.Length < 50)
-		{
-			return "";
-		}
+		ArgumentNullException.ThrowIfNull(byteArr);
 
 		return DetermineMimeString(byteArr);
 	}
@@ -105,17 +89,9 @@ public static class MagicNumberAnalyzer
 	/// </returns>
 	static public string GetFileMimeType(FileStream fileStream)
 	{
-		if(fileStream == null)
-		{
-			return "";
-		}
+		ArgumentNullException.ThrowIfNull(fileStream);
 
-		if(fileStream.Length < 50)
-		{
-			return "";
-		}
-
-		byte[] buffer = new byte[50];
+		byte[] buffer = new byte[fileStream.Length];
 		fileStream.Read(buffer, 0, buffer.Length);
 
 		return DetermineMimeString(buffer);
@@ -123,43 +99,50 @@ public static class MagicNumberAnalyzer
 
 	static private string DetermineMimeString(byte[] byteArr)
 	{
-		foreach(MagicNumber magicNumber in MagicNumbers)
-		{
-			bool allSequencesMatch = true;
-			foreach(KnownByteSequence knownByteSequence in magicNumber.KnownByteSequences)
-			{
-				if(!CompareBytes(byteArr, knownByteSequence.ByteArr, knownByteSequence.StartOffset))
-				{
-					allSequencesMatch = false;
-					break;
-				}
-			}
+		(bool success, string result) = MatchBytesToMagicNumbers(MagicNumbers, byteArr);
 
-			if(allSequencesMatch)
-			{
-				return magicNumber.MimeType;
-			}
+		if(success)
+		{
+			return result;
 		}
 
-		foreach(MagicNumber magicNumber in CustomMagicNumbers)
-		{
-			bool allSequencesMatch = true;
-			foreach(KnownByteSequence knownByteSequence in magicNumber.KnownByteSequences)
-			{
-				if(!CompareBytes(byteArr, knownByteSequence.ByteArr, knownByteSequence.StartOffset))
-				{
-					allSequencesMatch = false;
-					break;
-				}
-			}
+		(success, result) = MatchBytesToMagicNumbers(CustomMagicNumbers, byteArr);
 
-			if(allSequencesMatch)
-			{
-				return magicNumber.MimeType;
-			}
+		if(success)
+		{
+			return result;
 		}
 
 		return Application.Octet;
+	}
+
+	static private (bool, string) MatchBytesToMagicNumbers(List<MagicNumber> magicNumbersList, byte[] byteArr)
+	{
+		foreach(MagicNumber magicNumber in magicNumbersList.Where(x => x.KnownByteSequences.Sum(y => y.ByteArr.Length) <= byteArr.Length))
+		{
+			bool allSequencesMatch = true;
+			foreach(KnownByteSequence knownByteSequence in magicNumber.KnownByteSequences)
+			{
+				if(knownByteSequence.StartOffset + knownByteSequence.ByteArr.Length - 1 > byteArr.Length)
+				{
+					allSequencesMatch = false;
+					break;
+				}
+
+				if(!CompareBytes(byteArr, knownByteSequence.ByteArr, knownByteSequence.StartOffset))
+				{
+					allSequencesMatch = false;
+					break;
+				}
+			}
+
+			if(allSequencesMatch)
+			{
+				return (true, magicNumber.MimeType);
+			}
+		}
+
+		return (false, Application.Octet);
 	}
 
 	static private bool CompareBytes(byte[] arr1, byte[] arr2, int startingPos)
