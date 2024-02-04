@@ -115,6 +115,7 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 ## Contact
 
 Martin Yordanov - [Linkedin](https://www.linkedin.com/in/martin-y/)
+
 Project Link: [https://github.com/Azmekk/Magic-Number-Analyzer](https://github.com/Azmekk/Magic-Number-Analyzer)
 
 
