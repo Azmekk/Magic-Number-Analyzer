@@ -47,7 +47,7 @@ Whether you're working on file upload validation, data parsing, or simply need t
 <!-- GETTING STARTED -->
 ## Getting Started
 
-Simply pull the Nuget package from within Visual Studio and use the static `MagicNumberAnalyzer.GetFileMimeType()` method.
+Simply pull the [Nuget](https://www.nuget.org/packages/Martin.FileTools.MagicNumberAnalyzer) package from within Visual Studio and use the static `MagicNumberAnalyzer.GetFileMimeType()` method.
 
 ## Default filetypes
 
