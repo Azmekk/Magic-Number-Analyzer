@@ -49,6 +49,15 @@ Whether you're working on file upload validation, data parsing, or simply need t
 
 Simply pull the [Nuget](https://www.nuget.org/packages/Martin.FileTools.MagicNumberAnalyzer) package from within Visual Studio and use the static `MagicNumberAnalyzer.GetFileMimeType()` method.
 
+```cs
+using Martin.FileTools;
+
+//This can also be a MemoryStream or a byte[]
+using FileStream fileStream = File.OpenRead("Your-cool-file");
+
+string fileMimeType = MagicNumberAnalyzer.GetFileMimeType(fileStream);
+```
+
 ## Default filetypes
 
 The following filetypes are registered by default:
