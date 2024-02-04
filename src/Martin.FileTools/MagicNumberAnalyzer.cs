@@ -99,14 +99,14 @@ public static class MagicNumberAnalyzer
 
 	static private string DetermineMimeString(byte[] byteArr)
 	{
-		(bool success, string result) = MatchBytesToMagicNumbers(MagicNumbers, byteArr);
+		(bool success, string result) = MatchBytesToMagicNumbers(CustomMagicNumbers, byteArr);
 
 		if(success)
 		{
 			return result;
 		}
 
-		(success, result) = MatchBytesToMagicNumbers(CustomMagicNumbers, byteArr);
+		(success, result) = MatchBytesToMagicNumbers(MagicNumbers, byteArr);
 
 		if(success)
 		{
