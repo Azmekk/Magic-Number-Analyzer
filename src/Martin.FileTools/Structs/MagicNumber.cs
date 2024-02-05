@@ -1,24 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Martin.FileTools.Structs
+﻿namespace Martin.FileTools.Structs
 {
-    /// <summary>
-    /// A struct type representing a magic number. 
-    /// The MimeType is the string name it represents while the KnownByteSequences is an array of sequences that are known in a file. E.g. if we know 4 bytes at pos 0 and 8 bytes at offset 13 we can register 2 sequences at both offsets.
-    /// </summary>
-    public struct MagicNumber
-    {
-        public string MimeType;
-        public KnownByteSequence[] KnownByteSequences;
+	/// <summary>
+	/// Represents a magic number with information about the associated MIME type and known byte sequences in a file.
+	/// </summary>
+	public class MagicNumber
+	{
+		/// <summary>
+		/// Gets or sets the string name representing the MIME type associated with the magic number.
+		/// </summary>
+		public string MimeType { get; set; }
 
-        public MagicNumber(string mimeType, KnownByteSequence[] knownByteSequences)
-        {
-            MimeType = mimeType;
-            KnownByteSequences = knownByteSequences;
-        }
-    }
+		/// <summary>
+		/// Gets or sets an array of known byte sequences in the file associated with the magic number.
+		/// Each sequence is defined by a <see cref="KnownByteSequence"/>.
+		/// </summary>
+		public KnownByteSequence[] KnownByteSequences { get; set; }
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="MagicNumber"/> class with the specified MIME type and known byte sequences.
+		/// </summary>
+		/// <param name="mimeType">The string name representing the MIME type.</param>
+		/// <param name="knownByteSequences">An array of known byte sequences in the file.</param>
+		public MagicNumber(string mimeType, KnownByteSequence[] knownByteSequences)
+		{
+			MimeType = mimeType;
+			KnownByteSequences = knownByteSequences;
+		}
+	}
 }

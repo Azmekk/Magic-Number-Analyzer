@@ -1,23 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Martin.FileTools.Structs
+﻿namespace Martin.FileTools.Structs
 {
-    /// <summary>
-    /// Simple struct representing a sequence of bytes consisting of a byte array (ByteArr) and a starting offset (StartOffset).
-    /// </summary>
-	public struct KnownByteSequence
-    {
-        public byte[] ByteArr;
-        public int StartOffset;
+	/// <summary>
+	/// Represents a known byte sequence with a byte array and a starting offset.
+	/// </summary>
+	public class KnownByteSequence
+	{
+		/// <summary>
+		/// Gets or sets the byte array of the known sequence.
+		/// </summary>
+		public byte[] ByteArr { get; set; }
 
-        public KnownByteSequence(byte[] byteArr, int startOffset)
-        {
-            ByteArr = byteArr;
-            StartOffset = startOffset;
-        }
-    }
+		/// <summary>
+		/// Gets or sets the starting offset of the known sequence.
+		/// </summary>
+		public int StartOffset { get; set; }
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="KnownByteSequence"/> class with the specified byte array and starting offset.
+		/// </summary>
+		/// <param name="byteArr">The byte array of the known sequence.</param>
+		/// <param name="startOffset">The starting offset of the known sequence.</param>
+		public KnownByteSequence(byte[] byteArr, int startOffset)
+		{
+			ByteArr = byteArr;
+			StartOffset = startOffset;
+		}
+	}
 }

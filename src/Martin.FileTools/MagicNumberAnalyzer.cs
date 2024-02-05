@@ -1,21 +1,15 @@
-﻿using System;
-using System.ComponentModel;
-using System.IO;
-using System.Reflection.Metadata.Ecma335;
-using System.Runtime.Intrinsics.X86;
-using Martin.FileTools.Constants;
+﻿using Martin.FileTools.Constants;
 using Martin.FileTools.Structs;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace Martin.FileTools;
 
+/// <summary>
+/// Static class that offers mime type detection functionality based on magic numbers.
+/// </summary>
 public static class MagicNumberAnalyzer
 {
-	/// <summary>
-	/// This is the list of known magic numbers. Additional custom magic numbers can be added per user discretion.
-	/// Check the MagicNumbers struct summary to understand how to create new ones.
-	/// </summary>
-	private static List<MagicNumber> MagicNumbers =
+	private readonly static List<MagicNumber> MagicNumbers =
 	[
 		new(Image.Jpeg, [new([0xFF, 0xD8, 0xFF, 0xE0], 0)]),
 		new(Image.Jpeg, [new([0xFF, 0xD8, 0xFF, 0xE1], 0)]),
@@ -50,29 +44,26 @@ public static class MagicNumberAnalyzer
 		new(MimeTypeConstants.Exe, [new([0x4D, 0x5A], 0)]),
 	];
 
-	public static List<MagicNumber> CustomMagicNumbers = [];
+	private readonly static List<MagicNumber> CustomMagicNumbers = [];
 
 	/// <summary>
-	/// Checks a memory stream for known magic numbers for image types.
+	/// Scans a <see cref="MemoryStream"/> for predefined magic numbers to identify file types.
 	/// </summary>
 	/// <returns>
-	/// A string representing a known file mime type or a general application/octet-stream if no match.
+	/// Returns a string representing the detected file mime type if a match is found, or a general "application/octet-stream" if no match is identified.
 	/// </returns>
 	static public string GetFileMimeType(MemoryStream stream)
 	{
 		ArgumentNullException.ThrowIfNull(stream);
 
-		byte[] buffer = new byte[stream.Length];
-		stream.Read(buffer, 0, buffer.Length);
-
-		return DetermineMimeString(buffer);
+		return DetermineMimeString(stream);
 	}
 
 	/// <summary>
-	/// Checks a byte array for known magic numbers for image types.
+	/// Scans a <see cref="byte"/> array for known magic numbers.
 	/// </summary>
 	/// <returns>
-	/// /// A string representing a known file mime type or a general application/octet-stream if no match.
+	/// Returns a string representing the detected file mime type if a match is found, or a general "application/octet-stream" if no match is identified.
 	/// </returns>
 	static public string GetFileMimeType(byte[] byteArr)
 	{
@@ -82,19 +73,16 @@ public static class MagicNumberAnalyzer
 	}
 
 	/// <summary>
-	/// Checks a file stream for known magic numbers for image types.
+	/// Scans a <see cref="FileStream"/> for predefined magic numbers to identify file types.
 	/// </summary>
 	/// <returns>
-	/// /// A string representing a known file mime type or a general application/octet-stream if no match.
+	/// Returns a string representing the detected file mime type if a match is found, or a general "application/octet-stream" if no match is identified.
 	/// </returns>
-	static public string GetFileMimeType(FileStream fileStream)
+	static public string GetFileMimeType(FileStream stream)
 	{
-		ArgumentNullException.ThrowIfNull(fileStream);
+		ArgumentNullException.ThrowIfNull(stream);
 
-		byte[] buffer = new byte[fileStream.Length];
-		fileStream.Read(buffer, 0, buffer.Length);
-
-		return DetermineMimeString(buffer);
+		return DetermineMimeString(stream);
 	}
 
 	static private string DetermineMimeString(byte[] byteArr)
@@ -116,20 +104,70 @@ public static class MagicNumberAnalyzer
 		return Application.Octet;
 	}
 
-	static private (bool, string) MatchBytesToMagicNumbers(List<MagicNumber> magicNumbersList, byte[] byteArr)
+	static private (bool, string) MatchBytesToMagicNumbers(List<MagicNumber> magicNumbers, byte[] byteArr)
 	{
-		foreach(MagicNumber magicNumber in magicNumbersList.Where(x => x.KnownByteSequences.Sum(y => y.ByteArr.Length) <= byteArr.Length))
+		foreach(MagicNumber magicNumber in magicNumbers)
 		{
 			bool allSequencesMatch = true;
 			foreach(KnownByteSequence knownByteSequence in magicNumber.KnownByteSequences)
 			{
-				if(knownByteSequence.StartOffset + knownByteSequence.ByteArr.Length - 1 > byteArr.Length)
+				if(knownByteSequence.StartOffset + knownByteSequence.ByteArr.Length > byteArr.Length)
 				{
 					allSequencesMatch = false;
 					break;
 				}
 
 				if(!CompareBytes(byteArr, knownByteSequence.ByteArr, knownByteSequence.StartOffset))
+				{
+					allSequencesMatch = false;
+					break;
+				}
+			}
+
+			if(allSequencesMatch)
+			{
+				return (true, magicNumber.MimeType);
+			}
+		}
+
+		return (false, Application.Octet);
+	}
+
+	static private string DetermineMimeString(Stream stream)
+	{
+		ArgumentNullException.ThrowIfNull(stream);
+
+		(bool success, string result) = MatchBytesToMagicNumbers(CustomMagicNumbers, stream);
+
+		if(success)
+		{
+			return result;
+		}
+
+		(success, result) = MatchBytesToMagicNumbers(MagicNumbers, stream);
+
+		if(success)
+		{
+			return result;
+		}
+
+		return Application.Octet;
+	}
+
+	private static (bool success, string result) MatchBytesToMagicNumbers(List<MagicNumber> magicNumbers, Stream stream)
+	{
+		foreach(MagicNumber magicNumber in magicNumbers)
+		{
+			bool allSequencesMatch = true;
+			foreach(KnownByteSequence knownByteSequence in magicNumber.KnownByteSequences)
+			{
+				if(knownByteSequence.StartOffset + knownByteSequence.ByteArr.Length > stream.Length)
+				{
+					allSequencesMatch = false;
+					break;
+				}
+
+				if(!CompareBytes(stream, knownByteSequence.ByteArr, knownByteSequence.StartOffset))
 				{
 					allSequencesMatch = false;
 					break;
@@ -168,5 +206,40 @@ public static class MagicNumberAnalyzer
 		}
 
 		return true;
+	}
+
+	private static bool CompareBytes(Stream stream, byte[] byteArr, int startOffset)
+	{
+		stream.Position = startOffset;
+
+		for(int i = 0; i < byteArr.Length; i++)
+		{
+			if(stream.ReadByte() != byteArr[i])
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/// <summary>
+	/// Registers a new magic number to the custom scanning list. This allows the addition of custom magic numbers or the override of default ones.
+	/// </summary>
+	/// <param name="magicNumber">An instance of the MagicNumber class representing the new magic number to be added.</param>
+	static public void AddCustomMagicNumber(MagicNumber magicNumber)
+	{
+		ArgumentNullException.ThrowIfNull(magicNumber);
+
+		CustomMagicNumbers.Add(magicNumber);
+	}
+
+	/// <summary>
+	/// Registers a collection of magic numbers to the custom scanning list. This method enables the addition of custom magic numbers or the override of default ones.
+	/// </summary>
+	/// <param name="magicNumbers">A List of MagicNumber instances representing the new magic numbers to be added.</param>
+	static public void AddCustomMagicNumbersRange(List<MagicNumber> magicNumbers)
+	{
+		CustomMagicNumbers.AddRange(magicNumbers);
 	}
 }
