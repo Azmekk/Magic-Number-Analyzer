@@ -1,4 +1,4 @@
-﻿namespace Martin.FileTools.Structs
+﻿namespace Martin.FileTools.Types
 {
 	/// <summary>
 	/// Represents a known byte sequence with a byte array and a starting offset.

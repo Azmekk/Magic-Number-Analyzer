@@ -24,7 +24,7 @@ Find out more about how to use on the linked github page.</Description>
     <PackageReleaseNotes>Initial release</PackageReleaseNotes>
     <Copyright>Copyright information in the License</Copyright>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
-    <Version>2.0.0</Version>
+    <Version>2.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>

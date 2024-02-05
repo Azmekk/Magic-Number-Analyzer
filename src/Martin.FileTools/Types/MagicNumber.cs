@@ -1,4 +1,4 @@
-﻿namespace Martin.FileTools.Structs
+﻿namespace Martin.FileTools.Types
 {
 	/// <summary>
 	/// Represents a magic number with information about the associated MIME type and known byte sequences in a file.

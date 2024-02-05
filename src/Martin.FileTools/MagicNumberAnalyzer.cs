@@ -1,5 +1,5 @@
 ﻿using Martin.FileTools.Constants;
-using Martin.FileTools.Structs;
+using Martin.FileTools.Types;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace Martin.FileTools;
