@@ -89,7 +89,7 @@ The following filetypes are registered by default:
 <!-- USAGE EXAMPLES -->
 ## Custom Magic Numbers
 
-The library exposes a few structs and properties which allow you to register your own magic number byte sequences which that later work with the method listed in <a href="#getting-started">Getting Started</a>.
+The library exposes a few structs and properties which allow you to register your own magic number byte sequences that later work with the method listed in <a href="#getting-started">Getting Started</a>.
 
 Let's for example say we have a magic number which is `0x24 0x27 xx xx 0xF1 0xA1 0x41 xx 0xC3` and we want to make it work with the library. 
 
