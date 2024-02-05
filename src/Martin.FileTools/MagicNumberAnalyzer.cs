@@ -47,12 +47,12 @@ public static class MagicNumberAnalyzer
 	private readonly static List<MagicNumber> CustomMagicNumbers = [];
 
 	/// <summary>
-	/// Scans a <see cref="MemoryStream"/> for predefined magic numbers to identify file types.
+	/// Scans a <see cref="Stream"/> or a derived class such as <see cref="MemoryStream"/> or <see cref="FileStream"/> for predefined magic numbers to identify file types.
 	/// </summary>
 	/// <returns>
 	/// Returns a string representing the detected file mime type if a match is found, or a general "application/octet-stream" if no match is identified.
 	/// </returns>
-	static public string GetFileMimeType(MemoryStream stream)
+	static public string GetFileMimeType(Stream stream)
 	{
 		ArgumentNullException.ThrowIfNull(stream);
 
@@ -70,19 +70,6 @@ public static class MagicNumberAnalyzer
 		ArgumentNullException.ThrowIfNull(byteArr);
 
 		return DetermineMimeString(byteArr);
-	}
-
-	/// <summary>
-	/// Scans a <see cref="FileStream"/> for predefined magic numbers to identify file types.
-	/// </summary>
-	/// <returns>
-	/// Returns a string representing the detected file mime type if a match is found, or a general "application/octet-stream" if no match is identified.
-	/// </returns>
-	static public string GetFileMimeType(FileStream stream)
-	{
-		ArgumentNullException.ThrowIfNull(stream);
-
-		return DetermineMimeString(stream);
 	}
 
 	static private string DetermineMimeString(byte[] byteArr)
