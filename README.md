@@ -111,6 +111,7 @@ Suppose we have a specific magic number: `0x24 0x27 xx xx 0xF1 0xA1 0x41 xx 0xC3
 using Martin.FileTools;
 using Martin.FileTools.Types;
 
+//Make sure you register this only once either during startup or a method that gets called once.
 MagicNumberAnalyzer.AddCustomMagicNumber(
     new("Your custom mime type", [
         new([0x24, 0x27], 0),
