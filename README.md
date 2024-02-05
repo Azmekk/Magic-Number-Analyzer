@@ -93,6 +93,8 @@ The library provides a comprehensive interface for adding custom magic numbers. 
 
 ### Magic Number Integration Example:
 
+**Note: This only needs to be done once due to the static nature of the class and it's properties. A good place to do this would be your startup file or a method that is called once.**
+
 Suppose we have a specific magic number: `0x24 0x27 xx xx 0xF1 0xA1 0x41 xx 0xC3`. To include it into the library, follow these steps:
 
 1. Instantiate a new [`MagicNumber`](https://github.com/Azmekk/Magic-Number-Analyzer/blob/master/src/Martin.FileTools/Types/MagicNumber.cs) class.
