@@ -4,7 +4,7 @@
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
-[![MIT License][license-shield]][license-url]
+[![License][license-shield]][license-url]
 [![LinkedIn][linkedin-shield]][linkedin-url]
 
 <!-- PROJECT LOGO -->
@@ -49,6 +49,15 @@ Whether you're working on file upload validation, data parsing, or simply need t
 
 Simply pull the [Nuget](https://www.nuget.org/packages/Martin.FileTools.MagicNumberAnalyzer) package from within Visual Studio and use the static `MagicNumberAnalyzer.GetFileMimeType()` method.
 
+```cs
+using Martin.FileTools;
+
+//This can also be a MemoryStream or a byte[]
+using FileStream fileStream = File.OpenRead("Your-cool-file");
+
+string fileMimeType = MagicNumberAnalyzer.GetFileMimeType(fileStream);
+```
+
 ## Default filetypes
 
 The following filetypes are registered by default:
@@ -78,19 +87,22 @@ The following filetypes are registered by default:
 ```
 
 <!-- USAGE EXAMPLES -->
-## Usage
+## Custom Magic Numbers
 
-The library exposes a few structs, properties and methods which allow you to detect known file types but also register your own. As mentioned in the <a href="#getting-started">Getting Started</a> section to simply check a file against the registered list of magic numbers you can add the necessary using `using Martin.FileTools` and then call the method.
+The library exposes a few structs and properties which allow you to register your own magic number byte sequences that later work with the method listed in <a href="#getting-started">Getting Started</a>.
 
-Registering a new known magic number is rather easy but requires some explanation. The way magic numbers work means that sometimes you will need to check different offsets. Let's for example say we have a magic number which is `0x24 0x27 xx xx 0xF1 0xA1 0x41 xx 0xC3` in this case we have different bytes we need to check at different offsets.
-To achieve that you need to instantiate and add a new `MagicNumber` struct in the static `CustomMagicNumbers` field of the `MagicNumberAnalyzer`. The `MagicNumber` struct in itself holds a list of byte arrays with an offset which represet the ones we know. In our case that is the first 2 at offset 0, the 3 at offset 4 and the last byte at offset 8. Here's how to do that:
+Let's for example say we have a magic number which is `0x24 0x27 xx xx 0xF1 0xA1 0x41 xx 0xC3` and we want to make it work with the library. 
+
+(`xx` are bytes that are random between different files of the same type).
+
+To achieve that you need to instantiate and add a new [`MagicNumber`](https://github.com/Azmekk/Magic-Number-Analyzer/blob/master/src/Martin.FileTools/Structs/MagicNumber.cs) struct in the static [`CustomMagicNumbers`](https://github.com/Azmekk/Magic-Number-Analyzer/blob/d89a2c1a084a9f822784e7876f08880a73a10dc4/src/Martin.FileTools/MagicNumberAnalyzer.cs#L53) field of the [`MagicNumberAnalyzer`](https://github.com/Azmekk/Magic-Number-Analyzer/blob/master/src/Martin.FileTools/MagicNumberAnalyzer.cs) class. The [`MagicNumber`](https://github.com/Azmekk/Magic-Number-Analyzer/blob/master/src/Martin.FileTools/Structs/MagicNumber.cs) struct holds an array of [`KnownByteSequence`](https://github.com/Azmekk/Magic-Number-Analyzer/blob/master/src/Martin.FileTools/Structs/KnownByteSequence.cs) which  is basically just a byte array with a specified offset. These byte arrays are the bytes that we want to check for in files. In this example case that is the first 2 at offset 0, the 3 at offset 4 and the last byte at offset 8. Here's how to do that:
 
 ```cs
 using Martin.FileTools;
 using Martin.FileTools.Constants;
 using Martin.FileTools.Structs;
 
-MagicNumberAnalyzer.CustomMagicNumbers.Add(new MagicNumber("Your custom mime type", [new([0x24, 0x27], 0), [new([0xF1, 0xA1, 0x41], 4), [new([0xC3], 8)]));
+MagicNumberAnalyzer.CustomMagicNumbers.Add(new MagicNumber("Your custom mime type", [new([0x24, 0x27], 0), new([0xF1, 0xA1, 0x41], 4), new([0xC3], 8)]));
 ```
 
 Note that custom types are checked first so you could effectively override the registered types. That is so it doesn't interfere with your own custom magic number functionality.
