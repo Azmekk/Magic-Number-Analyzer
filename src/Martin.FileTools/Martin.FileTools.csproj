@@ -10,22 +10,18 @@
     <Authors>Martin Jordanov</Authors>
     <Product>$(AssemblyName).MagicNumberAnalyzer</Product>
     <RepositoryUrl>https://github.com/Azmekk/Magic-Number-Analyzer</RepositoryUrl>
-    <Description>A simple magic numbers analyzer which allows you to easily find out the file type of a file regardless of the extension at the end. This proves highly useful when working with files from untrusted sources or ones that do not include their extension at the end.
-
-Users can also add their own magic numbers by calling the .Add() method on the CustomMagicNumbers property of MagicNumberAnalyzer.
-
-Find out more about how to use on the linked github page.</Description>
+    <Description></Description>
     <PackageProjectUrl>https://github.com/Azmekk/Magic-Number-Analyzer</PackageProjectUrl>
     <PackageIcon>file-black-icon.png</PackageIcon>
-    <PackageTags>mime, mimetype, file, magic number, magic numbers, magic bytes, magic, numbers, bytes, analyzer, detector</PackageTags>
+    <PackageTags>mime;file;bytes;analyzer;detector</PackageTags>
     <PackageReadmeFile>Nuget.Readme.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
     <PackageId>$(AssemblyName).MagicNumberAnalyzer</PackageId>
-    <PackageReleaseNotes>-Added proper release notes
--Made the library support all derivatives of the Stream class</PackageReleaseNotes>
+    <PackageReleaseNotes>-Reduced tags to be more reasonable
+-Updated package description</PackageReleaseNotes>
     <Copyright>Copyright information in the License</Copyright>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
-    <Version>2.1.0</Version>
+    <Version>2.1.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
