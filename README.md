@@ -89,20 +89,36 @@ The following filetypes are registered by default:
 <!-- USAGE EXAMPLES -->
 ## Custom Magic Numbers
 
-The library exposes a few structs and properties which allow you to register your own magic number byte sequences that later work with the method listed in <a href="#getting-started">Getting Started</a>.
+The library provides a comprehensive interface for adding custom magic numbers. You can include unique magic numbers to increase the file identification capabilities in case the default types are not enough.
 
-Let's for example say we have a magic number which is `0x24 0x27 xx xx 0xF1 0xA1 0x41 xx 0xC3` and we want to make it work with the library. 
+### Magic Number Integration Example:
 
-(`xx` are bytes that are random between different files of the same type).
+**Note: This only needs to be done once due to the static nature of the class and it's properties. A good place to do this would be your startup file or a method that is called once.**
 
-To achieve that you need to instantiate and add a new [`MagicNumber`](https://github.com/Azmekk/Magic-Number-Analyzer/blob/master/src/Martin.FileTools/Structs/MagicNumber.cs) struct in the static [`CustomMagicNumbers`](https://github.com/Azmekk/Magic-Number-Analyzer/blob/d89a2c1a084a9f822784e7876f08880a73a10dc4/src/Martin.FileTools/MagicNumberAnalyzer.cs#L53) field of the [`MagicNumberAnalyzer`](https://github.com/Azmekk/Magic-Number-Analyzer/blob/master/src/Martin.FileTools/MagicNumberAnalyzer.cs) class. The [`MagicNumber`](https://github.com/Azmekk/Magic-Number-Analyzer/blob/master/src/Martin.FileTools/Structs/MagicNumber.cs) struct holds an array of [`KnownByteSequence`](https://github.com/Azmekk/Magic-Number-Analyzer/blob/master/src/Martin.FileTools/Structs/KnownByteSequence.cs) which  is basically just a byte array with a specified offset. These byte arrays are the bytes that we want to check for in files. In this example case that is the first 2 at offset 0, the 3 at offset 4 and the last byte at offset 8. Here's how to do that:
+Suppose we have a specific magic number: `0x24 0x27 xx xx 0xF1 0xA1 0x41 xx 0xC3`. To include it into the library, follow these steps:
 
-```cs
+1. Instantiate a new [`MagicNumber`](https://github.com/Azmekk/Magic-Number-Analyzer/blob/master/src/Martin.FileTools/Types/MagicNumber.cs) class.
+
+2. We know 3 byte sequences `0x24 0x27` at offset 0, `0xF1 0xA1 0x41` at offset 4 and `0xC3` at offset 8.
+
+3. Add a new instance of [`KnownByteSequence`](https://github.com/Azmekk/Magic-Number-Analyzer/blob/master/src/Martin.FileTools/Types/KnownByteSequence.cs) for each known sequence we have.
+
+3. Utilize the [`AddCustomMagicNumber`](https://github.com/Azmekk/Magic-Number-Analyzer/blob/48627d35e6c66bfe2b7d393e1d14ea060867f6ee/src/Martin.FileTools/MagicNumberAnalyzer.cs#L230) method available in [`MagicNumberAnalyzer`](https://github.com/Azmekk/Magic-Number-Analyzer/blob/master/src/Martin.FileTools/MagicNumberAnalyzer.cs) to register the custom magic number.
+
+### Code Example:
+
+```csharp
 using Martin.FileTools;
-using Martin.FileTools.Constants;
-using Martin.FileTools.Structs;
+using Martin.FileTools.Types;
 
-MagicNumberAnalyzer.CustomMagicNumbers.Add(new MagicNumber("Your custom mime type", [new([0x24, 0x27], 0), new([0xF1, 0xA1, 0x41], 4), new([0xC3], 8)]));
+//Make sure you register this only once either during startup or a method that gets called once.
+MagicNumberAnalyzer.AddCustomMagicNumber(
+    new("Your custom mime type", [
+        new([0x24, 0x27], 0),
+        new([0xF1, 0xA1, 0x41], 4),
+        new([0xC3], 8)
+    ])
+);
 ```
 
 Note that custom types are checked first so you could effectively override the registered types. That is so it doesn't interfere with your own custom magic number functionality.
