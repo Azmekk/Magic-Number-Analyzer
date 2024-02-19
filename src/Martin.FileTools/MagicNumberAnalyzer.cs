@@ -54,7 +54,10 @@ public static class MagicNumberAnalyzer
 	{
 		ArgumentNullException.ThrowIfNull(stream);
 
-		return DetermineMimeString(stream);
+		string result = DetermineMimeString(stream);
+		stream.Position = 0;
+
+		return result;
 	}
 
 	/// <summary>
