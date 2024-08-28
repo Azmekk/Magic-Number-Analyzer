@@ -6,7 +6,6 @@
 [![LinkedIn][linkedin-shield]][linkedin-url]
 
 <!-- PROJECT LOGO -->
-<br />
 <div align="center">
   <a href="https://github.com/Azmekk/Magic-Number-Analyzer">
     <img src="images/file-black-icon.png" alt="Logo" width="80" height="80">
