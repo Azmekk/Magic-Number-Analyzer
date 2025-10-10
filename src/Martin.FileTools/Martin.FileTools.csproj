@@ -20,7 +20,7 @@
     <PackageReleaseNotes>- Method now resets stream position after reading from it.</PackageReleaseNotes>
     <Copyright>Copyright information in the License</Copyright>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
-    <Version>2.1.3</Version>
+    <Version>2.1.4</Version>
   </PropertyGroup>
 
   <ItemGroup>
