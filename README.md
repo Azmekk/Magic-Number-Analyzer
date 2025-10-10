@@ -20,28 +20,24 @@
   </p>
 </div>
 
-
-
 <!-- ABOUT THE PROJECT -->
+
 ## About the project
 
 Hey! I decided to create a library designed to simplify file type detection. By utilizing magic numbers to identify file types within your C# projects you can safely determine file types,
-rather than relying on file extensions which can be changed. 
+rather than relying on file extensions which can be changed.
 
 By using this you instead check against a database of known byte sequences to get the mime type of specific files. The library is designed to work with filestreams, memorystreams and a byte array for ease of use. And you can even add your own custom byte arrays.
 
 Whether you're working on file upload validation, data parsing, or simply need to know the nature of a file, you can always reliably check using this library.
 
-
-
 ### Built With
 
-* [![DotNet][.Net]][.Net-url]
-* [![C#][CSharp]][CSharp-url]
-
-
+- [![DotNet][.Net]][.Net-url]
+- [![C#][CSharp]][CSharp-url]
 
 <!-- GETTING STARTED -->
+
 ## Getting Started
 
 Simply pull the [Nuget](https://www.nuget.org/packages/Martin.FileTools.MagicNumberAnalyzer) package from within Visual Studio and use the static `MagicNumberAnalyzer.GetFileMimeType()` method.
@@ -81,9 +77,11 @@ The following filetypes are registered by default:
 .zip: application/zip
 .rar: application/vnd.rar
 .exe: application/x-msdownload
+.avif: image/avif
 ```
 
 <!-- USAGE EXAMPLES -->
+
 ## Custom Magic Numbers
 
 The library provides a comprehensive interface for adding custom magic numbers. You can include unique magic numbers to increase the file identification capabilities in case the default types are not enough.
@@ -100,7 +98,7 @@ Suppose we have a specific magic number: `0x24 0x27 xx xx 0xF1 0xA1 0x41 xx 0xC3
 
 3. Add a new instance of [`KnownByteSequence`](https://github.com/Azmekk/Magic-Number-Analyzer/blob/master/src/Martin.FileTools/Types/KnownByteSequence.cs) for each known sequence we have.
 
-3. Utilize the [`AddCustomMagicNumber`](https://github.com/Azmekk/Magic-Number-Analyzer/blob/48627d35e6c66bfe2b7d393e1d14ea060867f6ee/src/Martin.FileTools/MagicNumberAnalyzer.cs#L230) method available in [`MagicNumberAnalyzer`](https://github.com/Azmekk/Magic-Number-Analyzer/blob/master/src/Martin.FileTools/MagicNumberAnalyzer.cs) to register the custom magic number.
+4. Utilize the [`AddCustomMagicNumber`](https://github.com/Azmekk/Magic-Number-Analyzer/blob/48627d35e6c66bfe2b7d393e1d14ea060867f6ee/src/Martin.FileTools/MagicNumberAnalyzer.cs#L230) method available in [`MagicNumberAnalyzer`](https://github.com/Azmekk/Magic-Number-Analyzer/blob/master/src/Martin.FileTools/MagicNumberAnalyzer.cs) to register the custom magic number.
 
 ### Code Example:
 
@@ -120,33 +118,30 @@ MagicNumberAnalyzer.AddCustomMagicNumber(
 
 Note that custom types are checked first so you could effectively override the registered types. That is so it doesn't interfere with your own custom magic number functionality.
 
-
-
 <!-- CONTRIBUTING -->
+
 ## Suggestions or Feature Requests
 
 If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also open an issue with the tag "suggestion".
 Don't forget to give the project a star! Thanks again!
 
-
-
 <!-- LICENSE -->
+
 ## License
 
 Distributed under the MIT License. See `LICENSE.txt` for more information.
 
-
 <!-- CONTACT -->
+
 ## Contact
 
 Martin Yordanov - [Linkedin](https://www.linkedin.com/in/martin-y/)
 
 Project Link: [https://github.com/Azmekk/Magic-Number-Analyzer](https://github.com/Azmekk/Magic-Number-Analyzer)
 
-
-
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+
 [contributors-shield]: https://img.shields.io/github/contributors/Azmekk/Magic-Number-Analyzer.svg?style=for-the-badge
 [contributors-url]: https://github.com/Azmekk/Magic-Number-Analyzer/graphs/contributors
 [forks-shield]: https://img.shields.io/github/forks/Azmekk/Magic-Number-Analyzer.svg?style=for-the-badge
